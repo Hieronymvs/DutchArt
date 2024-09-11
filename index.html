@@ -70,7 +70,7 @@
         // Call the function to create random shapes
         createShapes();
 
-        // Create individual tspan elements for the email text (after the shapes)
+        // Create individual tspan elements for the text (after the shapes)
         const parts = ["hello", "@", "dutchart.com"];
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.setAttribute('font-size', '40px'); // Use fixed pixel size for font
@@ -113,10 +113,10 @@
                 const dy = elementY - mouseY;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                // Push elements away if the mouse is within 100px
-                if (distance < 100) {
+                // Push elements away if the mouse is within 50px
+                if (distance < 50) {
                     const angle = Math.atan2(dy, dx);
-                    const pushDistance = 100 - distance;
+                    const pushDistance = 50 - distance;
                     const newX = parseFloat(element.getAttribute('x') || element.getAttribute('cx')) + pushDistance * Math.cos(angle);
                     const newY = parseFloat(element.getAttribute('y') || element.getAttribute('cy')) + pushDistance * Math.sin(angle);
                     if (element.tagName === 'tspan') {
