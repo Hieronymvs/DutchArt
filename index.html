@@ -78,9 +78,13 @@
         text.setAttribute('fill', 'black'); // Explicit black fill for text
         svgCanvas.appendChild(text); // Append text after shapes to make sure it's on top
 
-        // Positioning logic for letters
-        let startX = 300; // Starting X position for the text
+        // Calculate total text width
+        const totalTextWidth = parts.join('').length * letterSpacing;
 
+        // Center the text by setting the initial x position based on totalTextWidth
+        let startX = (1000 - totalTextWidth) / 2;
+
+        // Positioning logic for letters
         parts.forEach((part) => {
             part.split('').forEach((char) => {
                 const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
