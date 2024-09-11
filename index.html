@@ -30,7 +30,7 @@
         const svgCanvas = document.getElementById('svgCanvas');
         const shapes = []; // Array to hold shapes (circles and squares)
         const letters = [];
-        const letterSpacing = 30; // Adjust spacing between letters
+        const letterSpacing = 20; // Adjust spacing between letters
         const textY = 250; // Y-position for the text
 
         // Function to create random circles and squares
@@ -46,8 +46,7 @@
                 circle.setAttribute('cx', cx);
                 circle.setAttribute('cy', cy);
                 circle.setAttribute('r', radius);
-                circle.setAttribute('fill', '#0000FF'); // Explicit black fill
-                circle.setAttribute('stroke', 'none'); // Ensure no stroke
+                circle.setAttribute('style', 'fill: #0000FF; stroke: none;'); // Use style for fill
                 svgCanvas.appendChild(circle);
                 shapes.push(circle);
             }
@@ -62,8 +61,7 @@
                 rect.setAttribute('y', y);
                 rect.setAttribute('width', size);
                 rect.setAttribute('height', size);
-                rect.setAttribute('fill', '#0000FF'); // Explicit black fill
-                rect.setAttribute('stroke', 'none'); // Ensure no stroke
+                rect.setAttribute('style', 'fill: #0000FF; stroke: none;'); // Use style for fill
                 svgCanvas.appendChild(rect);
                 shapes.push(rect);
             }
@@ -72,10 +70,10 @@
         // Call the function to create random shapes
         createShapes();
 
-        // Create individual tspan elements for the text (after the shapes)
-        const parts = ["hello", "@", "dutchart.com"];
+        // Create individual tspan elements for the email text (after the shapes)
+        const parts = ["hello", "@", "helloworld.com"];
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute('font-size', '30px'); // Use fixed pixel size for font
+        text.setAttribute('font-size', '40px'); // Use fixed pixel size for font
         text.setAttribute('font-family', 'Consolas, monospace'); // Add fallback monospace font
         text.setAttribute('fill', 'black'); // Explicit black fill for text
         svgCanvas.appendChild(text); // Append text after shapes to make sure it's on top
@@ -112,9 +110,9 @@
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
                 // Push elements away if the mouse is within 100px
-                if (distance < 50) {
+                if (distance < 100) {
                     const angle = Math.atan2(dy, dx);
-                    const pushDistance = 50 - distance;
+                    const pushDistance = 100 - distance;
                     const newX = parseFloat(element.getAttribute('x') || element.getAttribute('cx')) + pushDistance * Math.cos(angle);
                     const newY = parseFloat(element.getAttribute('y') || element.getAttribute('cy')) + pushDistance * Math.sin(angle);
                     if (element.tagName === 'tspan') {
