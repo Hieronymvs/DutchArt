@@ -3,25 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Domain Lander</title>
-    <link href="https://fonts.googleapis.com/css2?family=Archivo Narrow:wght@400&display=swap" rel="stylesheet">
+    <title>Hello World Interactive SVG</title>
     <style>
-        body, html {
-            height: 100%;
-            margin: 0;
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Archivo Narrow', sans-serif;
-            background-color: #f0f0f0;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #d0d0d0;
         }
-        h1 {
-            font-size: 3em;
-            color: #333;
+        svg {
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>DutchArt</h1>
+    <svg id="svgCanvas" viewBox="0 0 1000 500">
+        <!-- Shapes will be added here first -->
+    </svg>
+
+    <script>
+        const svgCanvas = document.getElementById('svgCanvas');
+        const letterSpacing = 4; // Adjust spacing between letters
+        let totalTextWidth = 0;
+        const letters = [];
+        const shapes = []; // Array to hold shapes (circles and squares)
+
+        // Function to create random circles and squares
+        function createShapes() {
+            const maxShapes = 10;
+
+            // Create random circles
+            for (let i = 0; i < Math.floor(Math.random() * maxShapes); i++) {
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                const cx = Math.random() * 1000; // Random x position
+                const cy = Math.random() * 500;  // Random y position
+                const radius = Math.random() * 40 + 30; // Random radius between 10 and 70
+                circle.setAttribute('cx', cx);
+                circle.setAttribute('cy', cy);
+                circle.setAttribute('r', radius);
+                circle.setAttribute('fill', 'blue');
+                svgCanvas.appendChild(circle);
+                shapes.push(circle);
+            }
+
+            // Create random squares
+            for (let i = 0; i < Math.floor(Math.random() * maxShapes); i++) {
+                const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                const x = Math.random() * 1000; // Random x position
+                const y = Math.random() * 500;  // Random y position
+                const size = Math.random() * 40 + 30; // Random size between 10 and 70
+                rect.setAttribute('x', x);
+                rect.setAttribute('y', y);
+                rect.setAttribute('width', size);
+                rect.setAttribute('height', size);
+                rect.setAttribute('fill', 'blue');
+                svgCanvas.appendChild(rect);
+                shapes.push(rect);
+            }
+        }
+
+        // Call the function to create random shapes
+        createShapes();
+
+        // Create individual tspan elements for the text (after the shapes)
+        const parts = ["hello", "@", "dutchart.com"];
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute('font-size', '40');
+        text.setAttribute('font-family', 'Consolas');
+        text.setAttribute('fill', 'black');
+        svgCanvas.appendChild(text); // Append text after shapes to make sure it's on top
+
+        parts.forEach((part) => {
+            part.split('').forEach((char) => {
+                const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
+                tspan.textContent = char;
+                tspan.setAttribute('y', '150'); // Vertically centered
+                text.appendChild(tspan);
+                letters.push(tspan);
+            });
+        });
+
+        // Calculate the total width of the text to center it
+        letters.forEach((letter) => {
+            const bbox = letter.getBBox();
+            totalTextWidth += bbox.width + letterSpacing; // Add letter width and spacing
+        });
+
+        // Center the text by setting the initial x position based on totalTextWidth
+        let startX = (1000 - totalTextWidth) / 2;
+        letters.forEach((letter) => {
+            const bbox = letter.getBBox();
+            letter.setAttribute('x', startX); // Set the x position of each letter
+            startX += bbox.width + letterSpacing; // Increment x by the letter width and spacing
+        });
+
+        // Add interaction with the mouse
+        svgCanvas.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+
+            const allElements = [...letters, ...shapes]; // Combine letters and shapes
+
+            allElements.forEach(element => {
+                const bbox = element.getBoundingClientRect();
+                const elementX = bbox.left + bbox.width / 2;
+                const elementY = bbox.top + bbox.height / 2;
+
+                const dx = elementX - mouseX;
+                const dy = elementY - mouseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                // Push elements away if the mouse is within 100px
+                if (distance < 100) {
+                    const angle = Math.atan2(dy, dx);
+                    const pushDistance = 100 - distance;
+                    const newX = parseFloat(element.getAttribute('x') || element.getAttribute('cx')) + pushDistance * Math.cos(angle);
+                    const newY = parseFloat(element.getAttribute('y') || element.getAttribute('cy')) + pushDistance * Math.sin(angle);
+                    if (element.tagName === 'tspan') {
+                        element.setAttribute('x', newX);
+                        element.setAttribute('y', newY);
+                    } else if (element.tagName === 'circle') {
+                        element.setAttribute('cx', newX);
+                        element.setAttribute('cy', newY);
+                    } else if (element.tagName === 'rect') {
+                        element.setAttribute('x', newX);
+                        element.setAttribute('y', newY);
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
