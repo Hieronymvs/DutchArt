@@ -12,7 +12,7 @@
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #e0e0e0;
+            background-color: #d0d0d0;
         }
         svg {
             width: 100%;
@@ -22,12 +22,13 @@
     </style>
 </head>
 <body>
-    <svg id="svgCanvas" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
+    <svg id="svgCanvas" viewBox="0 0 1000 500">
         <!-- Shapes will be added here first -->
     </svg>
 
     <script>
         const svgCanvas = document.getElementById('svgCanvas');
+        const letterSpacing = 4; // Adjust spacing between letters
         let totalTextWidth = 0;
         const letters = [];
         const shapes = []; // Array to hold shapes (circles and squares)
@@ -41,11 +42,11 @@
                 const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
                 const cx = Math.random() * 1000; // Random x position
                 const cy = Math.random() * 500;  // Random y position
-                const radius = Math.random() * 40 + 10; // Random radius between 10 and 50
+                const radius = Math.random() * 40 + 30; // Random radius between 10 and 70
                 circle.setAttribute('cx', cx);
                 circle.setAttribute('cy', cy);
                 circle.setAttribute('r', radius);
-                circle.setAttribute('fill', 'black');
+                circle.setAttribute('fill', 'blue');
                 svgCanvas.appendChild(circle);
                 shapes.push(circle);
             }
@@ -55,12 +56,12 @@
                 const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                 const x = Math.random() * 1000; // Random x position
                 const y = Math.random() * 500;  // Random y position
-                const size = Math.random() * 40 + 10; // Random size between 10 and 50
+                const size = Math.random() * 40 + 30; // Random size between 10 and 70
                 rect.setAttribute('x', x);
                 rect.setAttribute('y', y);
                 rect.setAttribute('width', size);
                 rect.setAttribute('height', size);
-                rect.setAttribute('fill', 'black');
+                rect.setAttribute('fill', 'blue');
                 svgCanvas.appendChild(rect);
                 shapes.push(rect);
             }
@@ -69,27 +70,36 @@
         // Call the function to create random shapes
         createShapes();
 
-        // Create individual tspan elements for the email text (after the shapes)
-        const parts = ["hello", "@", "helloworld.com"];
+        // Create individual tspan elements for the text (after the shapes)
+        const parts = ["hello", "@", "dutchart.com"];
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        text.setAttribute('font-size', '8%'); // Use percentage for font-size to scale with screen size
+        text.setAttribute('font-size', '40');
         text.setAttribute('font-family', 'Consolas');
         text.setAttribute('fill', 'black');
-        text.setAttribute('x', '50%'); // Horizontally center the text
-        text.setAttribute('y', '50%'); // Vertically center the text
-        text.setAttribute('text-anchor', 'middle'); // Anchor the text in the middle
         svgCanvas.appendChild(text); // Append text after shapes to make sure it's on top
 
         parts.forEach((part) => {
             part.split('').forEach((char) => {
                 const tspan = document.createElementNS("http://www.w3.org/2000/svg", "tspan");
                 tspan.textContent = char;
-                tspan.setAttribute('dy', '0'); // Keep baseline aligned
-                tspan.setAttribute('x', null); // Will be controlled by 'text-anchor'
-                tspan.setAttribute('dx', '0.8%'); // Percentage-based spacing between letters
+                tspan.setAttribute('y', '150'); // Vertically centered
                 text.appendChild(tspan);
                 letters.push(tspan);
             });
+        });
+
+        // Calculate the total width of the text to center it
+        letters.forEach((letter) => {
+            const bbox = letter.getBBox();
+            totalTextWidth += bbox.width + letterSpacing; // Add letter width and spacing
+        });
+
+        // Center the text by setting the initial x position based on totalTextWidth
+        let startX = (1000 - totalTextWidth) / 2;
+        letters.forEach((letter) => {
+            const bbox = letter.getBBox();
+            letter.setAttribute('x', startX); // Set the x position of each letter
+            startX += bbox.width + letterSpacing; // Increment x by the letter width and spacing
         });
 
         // Add interaction with the mouse
@@ -109,9 +119,9 @@
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
                 // Push elements away if the mouse is within 100px
-                if (distance < 100) {
+                if (distance < 50) {
                     const angle = Math.atan2(dy, dx);
-                    const pushDistance = 100 - distance;
+                    const pushDistance = 50 - distance;
                     const newX = parseFloat(element.getAttribute('x') || element.getAttribute('cx')) + pushDistance * Math.cos(angle);
                     const newY = parseFloat(element.getAttribute('y') || element.getAttribute('cy')) + pushDistance * Math.sin(angle);
                     if (element.tagName === 'tspan') {
