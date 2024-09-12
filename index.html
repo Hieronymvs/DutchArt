@@ -19,9 +19,34 @@
             height: 100%;
             cursor: pointer;
         }
+        #info-column {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 150px;
+            font-family: Consolas, monospace;
+            font-size: 14px;
+        }
+        #info-column a {
+            color: #0000FF;
+            text-decoration: none;
+            display: block;
+            margin: 5px 0;
+        }
+        #info-column a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Info Column with Lorem Ipsum and Links -->
+    <div id="info-column">
+        <p>Hi. I can be reached at the following places.</p>
+        <a href="https://www.linkedin.com/in/jverschuren/">LinkedIn</a>
+        <a href="https://jeroenv.net">My personal website</a>
+    </div>
+
     <svg id="svgCanvas" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet">
         <!-- Shapes will be added here first -->
     </svg>
